@@ -1,0 +1,37 @@
+.LeftBar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.LeftBar h2 {
+    margin-left: 1rem;
+}
+
+.RightBar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Music {
+  position: absolute;
+  right: 1rem;
+  bottom: 2rem;
+}
+
+.MusicHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.MusicHeader button {
+    height: 40px;
+}
+
+.MusicHeader-Title {
+    display: flex;
+    flex-direction: row;
+}

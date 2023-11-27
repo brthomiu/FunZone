@@ -1,0 +1,13 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: -5%;
+  top: 0px;
+  left: 2%;
+
+}
+
+.Gamebox {
+}
+
