@@ -28,9 +28,9 @@ const publicPath = path.join(__dirname, "public");
 app.use(express.static(publicPath));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send(`Serving files on localhost:${port}`);
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Serving files on localhost:${port}`);
 });

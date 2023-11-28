@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 //useStartGame hook - contains the game ---------------------------------------------------------------------------------------------
 function useStartGame() {
   // References and config variables
-  const isBallActive = useRef(false);
+  const isEnemyBallActive = useRef(false);
 
   const isLoaded = useRef(false);
 
@@ -27,7 +27,6 @@ function useStartGame() {
     // Create Section ---------------------------------------------------------
 
     create() {
-
       // Create player
       this.player = this.physics.add.image(
         Math.trunc(screenWidth / 2),
@@ -77,7 +76,7 @@ function useStartGame() {
       this.physics.add.overlap(
         this.player,
         this.balls,
-        this.hitBall,
+        this.hitEnemyBall,
         null,
         this
       );
@@ -86,6 +85,8 @@ function useStartGame() {
     // Update Section ---------------------------------------------------------
 
     update() {
+
+      // Movement Handling ----------------------------------------------------
 
       // Movement speed
       let moveSpeed = 300;
@@ -101,40 +102,62 @@ function useStartGame() {
       }
 
       // Left/Right movement controls
+      if (this.cursors.right.isDown) {
+        this.player.setVelocityX(moveSpeed);
+      }
       if (this.cursors.left.isDown) {
         this.player.setVelocityX(negMoveSpeed);
-      } else if (this.cursors.right.isDown) {
-        this.player.setVelocityX(moveSpeed);
-      } else {
+        // This gives the newest keypress on the X axis priority
+        if (
+          this.cursors.right.getDuration() < this.cursors.left.getDuration() &&
+          this.cursors.right.isDown
+        ) {
+          this.player.setVelocityX(moveSpeed);
+        }
+      }
+      if (!this.cursors.left.isDown && !this.cursors.right.isDown) {
         this.player.setVelocityX(0);
       }
 
       // Up/Down movement controls
       if (this.cursors.up.isDown) {
         this.player.setVelocityY(negMoveSpeed);
-      } else if (this.cursors.down.isDown) {
+      }
+
+      if (this.cursors.down.isDown) {
         this.player.setVelocityY(moveSpeed);
-      } else {
+        // This gives the newest keypress on the Y axis priority
+        if (
+          this.cursors.up.getDuration() < this.cursors.down.getDuration() &&
+          this.cursors.up.isDown
+        ) {
+          this.player.setVelocityY(negMoveSpeed);
+        }
+      }
+
+      if (!this.cursors.up.isDown && !this.cursors.down.isDown) {
         this.player.setVelocityY(0);
       }
 
+      // Entity Handling -------------------------------------------------------
+
       // Spacebar to spawn a ball
-      if (this.cursors.space.isDown && !isBallActive.current) {
-        this.createBall(100, 100, 200, 200);
-        isBallActive.current = true;
+      if (this.cursors.space.isDown && !isEnemyBallActive.current) {
+        this.createEnemyBall(100, 100, 200, 200);
+        isEnemyBallActive.current = true;
       }
     }
 
-    // hitBall - Function triggered when player touches ball
-    hitBall(player, enemy) {
-      this.ball.disableBody(true, true);
+    // hitEnemyBall - Function triggered when player touches ball
+    hitEnemyBall(player, enemy) {
+      this.player.disableBody(true, true);
       this.ball = null;
-      isBallActive.current = false;
+      isEnemyBallActive.current = false;
     }
 
-    // createBall - Function to spawn a ball
-    createBall(x, y, vx, vy) {
-      if (!isBallActive.current) {
+    // createEnemyBall - Function to spawn a ball
+    createEnemyBall(x, y, vx, vy) {
+      if (!isEnemyBallActive.current) {
         this.ball = this.balls.get();
       } else if (!this.ball) {
         return;
@@ -147,7 +170,7 @@ function useStartGame() {
 
   const config = {
     type: Phaser.CANVAS,
-    parent: 'gameContainer',
+    parent: "gameContainer",
     // width: screenWidth,
     // height: screenHeight,
 
